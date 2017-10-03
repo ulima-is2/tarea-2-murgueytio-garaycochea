@@ -9,20 +9,6 @@ class Cine:
         self.nombre = nombre
         self.listaPeliculas = []
 
-    def agregarPelicula(self, pelicula):
-        if self.id_cine==1:
-            self.listaPeliculas.append(pelicula)
-        elif self.id_cine==2:
-            self.listaPeliculas.append(pelicula)
-
-    def listarPeliculas(self):
-        print('\n********************')
-        for pelicula in self.listaPeliculas:
-            print("{}. {}".format(pelicula.id, pelicula.nombre))
-        print('********************\n')
-        return self.listaPeliculas
-
-
     def listarFunciones(self, pelicula_id):
         print('Ahora elija la función (debe ingresar el formato hh:mm): ')
         for funcion in self.listaPeliculas[int(pelicula_id) - 1].funciones:
@@ -59,13 +45,6 @@ class Cines:
 
     def obtenerCine(self, id):
         return self.cines[id]
-
-    def listarCines(self):
-        print('\n********************')
-        for cine in self.cines:
-            print("{}: {}".format(cine.id_cine, cine.nombre))
-        print('********************\n')
-
 
 def menu():
     print('Ingrese la opción que desea realizar')
@@ -113,14 +92,13 @@ class BD:
         self.sqlito.agregarFunciones(['21:00'],cinePlaneta,pPulpo)
 
         print('Datos insertados con éxito')
-        self.cines = Cines([cineStark,cinePlaneta])
 
 class SQL:
 
     def iniciarSQL(self):
         cursor.execute('''CREATE TABLE IF NOT EXISTS CINE (idCine integer, nombreCine text)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS PELICULA (idPelicula integer, nombrePelicula text)''')
-        cursor.execute('''CREATE TABLE IF NOT EXISTS CARTELERA (id integer, nombrePelicula text,nombreCine text)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS CARTELERA (id integer, nombrePelicula text,idCine integer)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS FUNCION (idFuncion,horario text, idCine integer, idPelicula text)''')
         conn.commit()
 
@@ -142,8 +120,8 @@ class SQL:
         conn.commit()
 
     def agregarPeliculaxCine(self, id,pelicula,cine):
-        cursor.execute("INSERT INTO CARTELERA (id, nombrePelicula,nombreCine) VALUES (?,?,?)",
-                       (id,pelicula.nombrePelicula, cine.nombre))
+        cursor.execute("INSERT INTO CARTELERA (id, nombrePelicula,idCine) VALUES (?,?,?)",
+                       (id,pelicula.nombrePelicula, cine.id_cine))
         conn.commit()
 
 
@@ -153,7 +131,19 @@ class SQL:
                            (index,hora,cine.id_cine,pelicula.idPelicula))
             conn.commit()
 
+    def listarCines(self):
+        cines =cursor.execute("SELECT idCine, nombreCine from CINE")
+        print('\n********************')
+        for row in cines:
+            print("{}: {}".format(row[0], row[1]))
+        print('********************\n')
 
+    def listarPeliculas(self,idCine):
+        cines =cursor.execute("SELECT id, nombrePelicula from CARTELERA where idCine = ?",(idCine))
+        print('\n********************')
+        for row in cines:
+            print("{}: {}".format(row[0], row[1]))
+        print('********************\n')
 
 class Adapter:
     def obtener_adapter(self, opcion):
@@ -166,29 +156,27 @@ class Adapter:
         elif opcion == '0':
             return Salir()
 
-class Opcion1:
-    datos = BD()
+class Opcion():
+    datos =BD()
+
+class Opcion1(Opcion):
     def mostrar(self):
-        self.datos.cines.listarCines()
+        self.datos.sqlito.listarCines()
 
-
-class Opcion2:
-    datos = BD()
+class Opcion2(Opcion):
     opcion1 = Opcion1()
     def mostrar(self):
         self.opcion1.mostrar()
         cine = input('Primero elija un cine: ')
         if cine == '1':
-            cine = self.datos.cines.obtenerCine(int(cine)-1)
+            cine = self.datos.sqlito.listarPeliculas(cine)
         elif cine == '2':
-            cine = self.datos.cines.obtenerCine(int(cine) - 1)
+            cine = self.datos.sqlito.listarPeliculas(cine)
         else:
             print("Se ingresó un valor no válido")
-        cine.listarPeliculas()
         return cine
 
-class Opcion3:
-    datos = BD()
+class Opcion3(Opcion):
     opcion2= Opcion2()
     def mostrar(self):
         cines=self.opcion2.mostrar()
@@ -202,7 +190,7 @@ class Salir():
 
 
 def manager():
-    BD()
+    #BD()
 
     flag = True
     while flag:
