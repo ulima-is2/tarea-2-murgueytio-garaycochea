@@ -34,7 +34,7 @@ if __name__ == '__main__':
     main()
 ```
 
-Por otro lado el codigo general para los cines:
+Por otro lado el codigo general para el cine:
 
 ```python
 class Cine:
@@ -61,22 +61,6 @@ class Cine:
                 pelicula.funciones = ['21:00']
             self.listaPeliculas.append(pelicula)
 
-    def listarPeliculas(self):
-        print('\n********************')
-        for pelicula in self.listaPeliculas:
-            print("{}. {}".format(pelicula.id, pelicula.nombre))
-        print('********************\n')
-        return self.listaPeliculas
-
-
-    def listarFunciones(self, pelicula_id):
-        print('Ahora elija la función (debe ingresar el formato hh:mm): ')
-        for funcion in self.listaPeliculas[int(pelicula_id) - 1].funciones:
-            print('Función: {}'.format(funcion))
-        _funcion = input('Funcion: ')
-        _cantEnt = input('Ingrese cantidad de entradas: ')
-
-        return Entrada(pelicula_id,_funcion,_cantEnt)
 ```
 
 Se puede observar un primer acercamiento al patron Factory ya que a diferencia del codigo inicial donde se creaba cada cine por 
