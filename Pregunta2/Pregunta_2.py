@@ -23,7 +23,7 @@ class Cine:
                 pelicula.funciones = ['21:00']
             self.listaPeliculas.append(pelicula)
 
-    def listar_peliculas(self):
+    def listarPeliculas(self):
         print('\n********************')
         for pelicula in self.listaPeliculas:
             print("{}. {}".format(pelicula.id, pelicula.nombre))
@@ -31,7 +31,7 @@ class Cine:
         return self.listaPeliculas
 
 
-    def listar_funciones(self, pelicula_id):
+    def listarFunciones(self, pelicula_id):
         print('Ahora elija la función (debe ingresar el formato hh:mm): ')
         for funcion in self.listaPeliculas[int(pelicula_id) - 1].funciones:
             print('Función: {}'.format(funcion))
@@ -124,7 +124,7 @@ class Opcion2:
             cine = self.datos.cines.obtenerCine(int(cine) - 1)
         else:
             print("Se ingresó un valor no válido")
-        cine.listar_peliculas()
+        cine.listarPeliculas()
         return cine
 
 class Opcion3:
@@ -133,7 +133,7 @@ class Opcion3:
     def mostrar(self):
         cines=self.opcion2.mostrar()
         pela=input("Elija la pelicula que quiere ver: ")
-        entrada=cines.listar_funciones(pela)
+        entrada=cines.listarFunciones(pela)
         entrada.guardar_entrada(entrada.pelicula_id,entrada.funcion,entrada.cantidad)
 
 class Salir():
