@@ -1,21 +1,20 @@
-
 class Cine:
-    def __init__(self, id_cine,nombre):
+    def __init__(self, id_cine, nombre):
         self.id_cine = id_cine
         self.nombre = nombre
         self.listaPeliculas = []
 
     def agregarPelicula(self, pelicula):
-        if self.id_cine==1:
-            if pelicula.nombre=='Desaparecido':
-                pelicula.funciones =['21:00', '23:00']
-            elif pelicula.nombre=='Deep El Pulpo':
+        if self.id_cine == 1:
+            if pelicula.nombre == 'Desaparecido':
+                pelicula.funciones = ['21:00', '23:00']
+            elif pelicula.nombre == 'Deep El Pulpo':
                 pelicula.funciones = ['16:00', '20:00']
             self.listaPeliculas.append(pelicula)
-        elif self.id_cine==2:
-            if pelicula.nombre=='Desaparecido':
+        elif self.id_cine == 2:
+            if pelicula.nombre == 'Desaparecido':
                 pelicula.funciones = ['20:00', '23:00']
-            elif pelicula.nombre=='Deep El Pulpo':
+            elif pelicula.nombre == 'Deep El Pulpo':
                 pelicula.funciones = ['16:00']
             elif pelicula.nombre == 'IT':
                 pelicula.funciones = ['19:00', '20:30', '22:00']
@@ -30,7 +29,6 @@ class Cine:
         print('********************\n')
         return self.listaPeliculas
 
-
     def listarFunciones(self, pelicula_id):
         print('Ahora elija la función (debe ingresar el formato hh:mm): ')
         for funcion in self.listaPeliculas[int(pelicula_id) - 1].funciones:
@@ -38,8 +36,7 @@ class Cine:
         _funcion = input('Funcion: ')
         _cantEnt = input('Ingrese cantidad de entradas: ')
 
-        return Entrada(pelicula_id,_funcion,_cantEnt)
-
+        return Entrada(pelicula_id, _funcion, _cantEnt)
 
 class Entrada:
     def __init__(self, pelicula_id, funcion, cantidad):
@@ -47,15 +44,15 @@ class Entrada:
         self.funcion = funcion
         self.cantidad = cantidad
 
-    def guardar_entrada(self, pelicula_id,funcion,cantidad):
+    def guardar_entrada(self, pelicula_id, funcion, cantidad):
         print('\n***********************************')
-        print('{} boletos comprados para la función de {}'.format(self.cantidad,funcion))
+        print('{} boletos comprados para la función de {}'.format(self.cantidad, funcion))
         print('***********************************\n')
 
 class Pelicula:
-    def __init__(self,  nombre,id):
+    def __init__(self, nombre, id):
         self.nombre = nombre
-        self.id=id
+        self.id = id
 
 class Cines:
     def __init__(self, listaCines):
@@ -70,7 +67,6 @@ class Cines:
             print("{}: {}".format(cine.id_cine, cine.nombre))
         print('********************\n')
 
-
 def menu():
     print('Ingrese la opción que desea realizar')
     print('(1) Listar cines')
@@ -81,18 +77,19 @@ def menu():
 
 
 class BD:
+
     def __init__(self):
-        cineStark = Cine(1,"CineStark")
-        cineStark.agregarPelicula(Pelicula('Desaparecido',1))
-        cineStark.agregarPelicula(Pelicula('Deep El Pulpo',2))
+        cineStark = Cine(1, "CineStark")
+        cineStark.agregarPelicula(Pelicula('Desaparecido', 1))
+        cineStark.agregarPelicula(Pelicula('Deep El Pulpo', 2))
 
-        cinePlaneta = Cine(2,"CinePlaneta")
-        cinePlaneta.agregarPelicula(Pelicula('IT',1))
-        cinePlaneta.agregarPelicula(Pelicula('La Hora Final',2))
-        cinePlaneta.agregarPelicula(Pelicula('Desaparecido',3))
-        cinePlaneta.agregarPelicula(Pelicula('Deep El Pulpo',4))
+        cinePlaneta = Cine(2, "CinePlaneta")
+        cinePlaneta.agregarPelicula(Pelicula('IT', 1))
+        cinePlaneta.agregarPelicula(Pelicula('La Hora Final', 2))
+        cinePlaneta.agregarPelicula(Pelicula('Desaparecido', 3))
+        cinePlaneta.agregarPelicula(Pelicula('Deep El Pulpo', 4))
 
-        self.cines = Cines([cineStark,cinePlaneta])
+        self.cines = Cines([cineStark, cinePlaneta])
 
 
 class Adapter:
@@ -106,20 +103,21 @@ class Adapter:
         elif opcion == '0':
             return Salir()
 
-class Opcion1:
+
+class Opcion:
     datos = BD()
+
+class Opcion1(Opcion):
     def mostrar(self):
         self.datos.cines.listarCines()
 
-
-class Opcion2:
-    datos = BD()
+class Opcion2(Opcion):
     opcion1 = Opcion1()
     def mostrar(self):
         self.opcion1.mostrar()
         cine = input('Primero elija un cine: ')
         if cine == '1':
-            cine = self.datos.cines.obtenerCine(int(cine)-1)
+            cine = self.datos.cines.obtenerCine(int(cine) - 1)
         elif cine == '2':
             cine = self.datos.cines.obtenerCine(int(cine) - 1)
         else:
@@ -127,32 +125,30 @@ class Opcion2:
         cine.listarPeliculas()
         return cine
 
-class Opcion3:
-    datos = BD()
-    opcion2= Opcion2()
+class Opcion3(Opcion):
+    opcion2 = Opcion2()
     def mostrar(self):
-        cines=self.opcion2.mostrar()
-        pela=input("Elija la pelicula que quiere ver: ")
-        entrada=cines.listarFunciones(pela)
-        entrada.guardar_entrada(entrada.pelicula_id,entrada.funcion,entrada.cantidad)
+        cines = self.opcion2.mostrar()
+        pela = input("Elija la pelicula que quiere ver: ")
+        entrada = cines.listarFunciones(pela)
+        entrada.guardar_entrada(entrada.pelicula_id, entrada.funcion, entrada.cantidad)
 
 class Salir():
     def mostrar(self):
         print('Finalizado')
 
-
 def manager():
     flag = True
     while flag:
         opcion = menu()
-        adapter=Adapter()
-        modelo=adapter.obtener_adapter(opcion)
+        adapter = Adapter()
+        modelo = adapter.obtener_adapter(opcion)
         modelo.mostrar()
-        if opcion=='0':
-            flag=False
+        if opcion == '0':
+            flag = False
 
 def main():
-   manager()
+    manager()
 
 if __name__ == '__main__':
     main()

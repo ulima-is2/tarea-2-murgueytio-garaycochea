@@ -9,16 +9,6 @@ class Cine:
         self.nombre = nombre
         self.listaPeliculas = []
 
-    def listarFunciones(self, pelicula_id):
-        print('Ahora elija la función (debe ingresar el formato hh:mm): ')
-        for funcion in self.listaPeliculas[int(pelicula_id) - 1].funciones:
-            print('Función: {}'.format(funcion))
-        _funcion = input('Funcion: ')
-        _cantEnt = input('Ingrese cantidad de entradas: ')
-
-        return Entrada(pelicula_id,_funcion,_cantEnt)
-
-
 class Entrada:
     def __init__(self, pelicula_id, funcion, cantidad):
         self.pelicula_id = pelicula_id
@@ -145,6 +135,19 @@ class SQL:
             print("{}: {}".format(row[0], row[1]))
         print('********************\n')
 
+    def listarFunciones(self, idCine,idPelicula):
+        print('Ahora elija la función (debe ingresar el formato hh:mm): ')
+        cines = cursor.execute("SELECT horario from FUNCION where idCine = ? and idPelicula = ?", (idCine,idPelicula))
+        horarios=[]
+        for row in cines:
+            horarios.append(row[0])
+            print('Función: {}'.format(row[0]))
+
+        _funcion = input('Funcion: ')
+        _cantEnt = input('Ingrese cantidad de entradas: ')
+
+        return Entrada(1,_funcion,_cantEnt)
+
 class Adapter:
     def obtener_adapter(self, opcion):
         if opcion == '1':
@@ -168,20 +171,15 @@ class Opcion2(Opcion):
     def mostrar(self):
         self.opcion1.mostrar()
         cine = input('Primero elija un cine: ')
-        if cine == '1':
-            cine = self.datos.sqlito.listarPeliculas(cine)
-        elif cine == '2':
-            cine = self.datos.sqlito.listarPeliculas(cine)
-        else:
-            print("Se ingresó un valor no válido")
+        self.datos.sqlito.listarPeliculas(cine)
         return cine
 
 class Opcion3(Opcion):
     opcion2= Opcion2()
     def mostrar(self):
-        cines=self.opcion2.mostrar()
+        cine=self.opcion2.mostrar()
         pela=input("Elija la pelicula que quiere ver: ")
-        entrada=cines.listarFunciones(pela)
+        entrada=self.datos.sqlito.listarFunciones(int(cine),int(pela))
         entrada.guardar_entrada(entrada.pelicula_id,entrada.funcion,entrada.cantidad)
 
 class Salir():
@@ -190,8 +188,6 @@ class Salir():
 
 
 def manager():
-    #BD()
-
     flag = True
     while flag:
         opcion = menu()
